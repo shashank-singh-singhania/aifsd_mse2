@@ -9,9 +9,12 @@ const port = process.env.PORT || 5000;
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
+  "https://aifsd-mse2.onrender.com",
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_2,
 ].filter(Boolean);
+
+const renderOriginRegex = /^https:\/\/[a-z0-9-]+\.onrender\.com$/i;
 
 app.use(
   cors({
@@ -19,6 +22,7 @@ app.use(
       // Allow non-browser clients like Render health checks and Postman.
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (renderOriginRegex.test(origin)) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
